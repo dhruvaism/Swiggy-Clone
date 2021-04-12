@@ -56,5 +56,6 @@ public class RestaurantController {
 		String message = restaurantService.deleteRestaurant(restaurantId);
 		return message;
 	}
+	//bflgbhjqegfyuq vgf u
 	
 }
