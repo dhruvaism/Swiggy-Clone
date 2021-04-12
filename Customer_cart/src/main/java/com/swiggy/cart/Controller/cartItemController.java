@@ -17,12 +17,26 @@ public class cartItemController {
     @Autowired
     private cartService cartservice;
 
-    @GetMapping("/cartitem/{id}/")
-    public List<cartItem> viewCartItem(@PathVariable String id)
+    /**
+     * Description: It will show the cart item of 'cartItemId'.
+     * Access: Admin, Users.
+     * @param cartItemId -It is primary key of entity cartItem
+     * @return -List of cart item.
+     */
+    @GetMapping("/cartitem/{cartItemId}/")
+    public List<cartItem> viewCartItem(@PathVariable String cartItemId)
     {
-        return itemservice.viewCartItem(Long.parseLong(id));
+        return itemservice.viewCartItem(Long.parseLong(cartItemId));
     }
 
+    /**
+     * Description: Use for add a food in cartIem
+     * Access: Admin, Users
+     * @param cartid -
+     * @param foodid -
+     * @param entity -
+     * @return
+     */
     @PostMapping("/cartitem/{cartid}/{foodid}/")
     public String addItem(@PathVariable String cartid,
                           @PathVariable String foodid,

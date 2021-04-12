@@ -27,7 +27,7 @@ public class cartService {
             return cartrepo.getOne(id);
     }
 
-    public String deleteCart(long cartId) {
+    public String clearCart(long cartId) {
         try {
             List<cartItem> list=itemRepo.findAll();
             for(cartItem i: list) itemRepo.delete(i);

@@ -14,25 +14,38 @@ public class cartController {
     @Autowired
     private cartService cartservice;
 
-    //customer, admin
-    @DeleteMapping("/cart/{cartId}/")
-    public String deleteCart(@PathVariable String cartId)
+    /**
+     * Description:-It will return only that cart who have cart id as 'cartId'.
+     * Access: Admin, Users.
+     * @param cartId
+     * @return Particular Cart as id 'cartId'.
+     */
+    @GetMapping("/cart/{cartId}/")
+    public Cart viewMyCart(@PathVariable String cartId)
     {
-        return cartservice.deleteCart(Long.parseLong(cartId));
+        return cartservice.viewMyCart(Long.parseLong(cartId));
     }
 
-    //customer, admin
-    @GetMapping("/cart/{id}/")
-    public Cart viewMyCart(@PathVariable String id)
-    {
-        return cartservice.viewMyCart(Long.parseLong(id));
-    }
-
-    //admin
+    /**
+     * Description:- It will return the all cart.
+     * Access: Admin,
+     * @return List of cart.
+     */
     @GetMapping("/cart/")
     public List<Cart> viewAllCart()
     {
         return cartservice.viewAllCart();
     }
 
+    /**
+     * Description: This API clear the item of cart 'cartId'
+     * Access: Admin, Users
+     * @param cartId
+     * @return
+     */
+    @DeleteMapping("/cart/{cartId}/")
+    public String clearCart(@PathVariable String cartId)
+    {
+        return cartservice.clearCart(Long.parseLong(cartId));
+    }
 }
