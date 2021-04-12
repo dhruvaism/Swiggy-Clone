@@ -1,5 +1,6 @@
 package com.swiggy.orderservice.exception;
 
+import com.swiggy.orderservice.dto.Response;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +16,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = {ApiRequestException.class})
     public ResponseEntity<Object> handleApiRequestException(ApiRequestException e){
-
-        ApiException apiException = new ApiException(e.getMessage(), HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(apiException,HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new Response(e.getMessage(),false),HttpStatus.BAD_REQUEST);
     }
 
     @Override
@@ -25,15 +24,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             HttpMessageNotReadableException ex, HttpHeaders headers,
             HttpStatus status, WebRequest request) {
 
-        ApiException apiException = new ApiException("Missing request body",status);
-        return new ResponseEntity<>(apiException,status);
+        Response response = new Response("Missing request body",false);
+        return new ResponseEntity<>(response,status);
     }
 
     @Override
     public ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 
-        ApiException apiException = new ApiException(" Missing request parameters",status);
-        return new ResponseEntity<>(apiException,status);
+        Response response = new Response("Missing request parameters",false);
+        return new ResponseEntity<>(response,status);
     }
 
 
