@@ -4,7 +4,6 @@ import com.swiggy.orderservice.dto.*;
 import com.swiggy.orderservice.entity.*;
 import com.swiggy.orderservice.exception.ApiRequestException;
 import com.swiggy.orderservice.repository.*;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,107 +39,91 @@ public class OrderService {
 
    //  3 sql operations, you have done 2 operations, while 3rd opeartion your systems gets failure
 
-    @Transactional
-    public Order addOrder(OrderRequestBody orderRequestBody){
+    @Transactional //(either complete 3 sql roperations or nothing)
+    public Order addOrder(int customer_id, OrderRequestBody orderRequestBody){
+
         Order order = new Order();
 
-        //validity of payment
-        Payment payment = paymentService.getPaymentById(orderRequestBody.getPayment_id());
-        if(payment.isHas_order()){
-            throw new ApiRequestException("Invalid payment details");
-        }
-
-        //validity of order items
-        if(orderRequestBody.getOrder_items()==null){
-            throw new ApiRequestException("there should be atleast 1 item");
-        }
-
-        List<OrderItem> orderItems = new ArrayList<>();
-        orderRequestBody.getOrder_items().stream().forEach(orderItem -> {
-           //i every order items in request body
-            OrderItem orderItem1 = new OrderItem();
-            orderItem1.setFood_name(orderItem.getFood_name());
-
-            //TODO -- check existance of food by food_id in restaurant microservice
-
-            orderItem1.setFood_id(orderItem.getFood_id());
-            orderItem1.setPrice(orderItem.getPrice());
-            orderItem1.setQuantity(orderItem.getQuantity());
-            try {
-                orderItemsRepository.save(orderItem1); //order items
-            }catch (Exception e){
-                throw new ApiRequestException(e.getMessage());
+        try {
+            //validity of payment
+            Payment payment = paymentService.getPaymentById(orderRequestBody.getPayment_id());
+            if (payment.isHas_order()) {
+                throw new ApiRequestException("Invalid payment details");
             }
 
-            orderItems.add(orderItem1); // order enity has orderitems
-        });
+            //validity of order items
+            if (orderRequestBody.getOrder_items() == null) {
+                throw new ApiRequestException("there should be atleast 1 item");
+            }
 
-        Bill bill = new Bill();
-        bill.setDiscount(orderRequestBody.getDiscount());
-        bill.setDelivery_charge(orderRequestBody.getDelivery_charge());
-        bill.setItem_total(orderRequestBody.getItem_total());
-        bill.setOrder_total(orderRequestBody.getOrder_total());
+            List<OrderItem> orderItems = new ArrayList<>();
+            orderRequestBody.getOrder_items().stream().forEach(orderItem -> {
+                //i every order items in request body
+                OrderItem orderItem1 = new OrderItem();
+                orderItem1.setFood_name(orderItem.getFood_name());
 
-        try {
+                //TODO -- check existance of food by food_id in restaurant microservice
+
+                orderItem1.setFood_id(orderItem.getFood_id());
+                orderItem1.setPrice(orderItem.getPrice());
+                orderItem1.setQuantity(orderItem.getQuantity());
+                orderItemsRepository.save(orderItem1); //order items
+
+                orderItems.add(orderItem1); // order enity has orderitems
+            });
+
+            Bill bill = new Bill();
+            bill.setDiscount(orderRequestBody.getDiscount());
+            bill.setDelivery_charge(orderRequestBody.getDelivery_charge());
+            bill.setItem_total(orderRequestBody.getItem_total());
+            bill.setOrder_total(orderRequestBody.getOrder_total());
+
             bill = billRepository.save(bill);
-        }catch (Exception e){
-            throw new ApiRequestException(e.getMessage());
-        }
 
-        order.setBill(bill);
-        payment.setHas_order(true);
-        order.setPayment(payment);
-        order.setOrder_items(orderItems);
-        order.setOrder_status(OrderStatus.CONFIRMED);
-        Date date = Calendar.getInstance().getTime();
-        DateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy hh:mm:ss");
-        String strDate = dateFormat.format(date);
-        order.setOrder_date(strDate);
+            order.setBill(bill);
+            payment.setHas_order(true);
+            order.setPayment(payment);
+            order.setOrder_items(orderItems);
+            order.setOrder_status(OrderStatus.CONFIRMED);
+            Date date = Calendar.getInstance().getTime();
+            DateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy hh:mm:ss");
+            String strDate = dateFormat.format(date);
+            order.setOrder_date(strDate);
 
-        //TODO -- validity of customer_id
-        // need to call customer microservice
+            //TODO -- validity of customer_id
+            // need to call customer microservice
 
 
-        CustomerAddress customerAddress = new CustomerAddress(123,"55","Taradubi","Hojai","Assam","782429","JUgijan");
-        Customer customer = new Customer(45,"Dhrubajit Sarkar", "dhrub@gmail.com","7896914819",customerAddress);
+            CustomerAddress customerAddress = new CustomerAddress(123, "55", "Taradubi", "Hojai", "Assam", "782429", "JUgijan");
+            Customer customer = new Customer(customer_id, "Dhrubajit Sarkar", "dhrub@gmail.com", "7896914819", customerAddress);
 
-        //save customer
-
-        try {
+            //save customer
             customerAddressRepository.save(customerAddress);
             customer = customerRepository.save(customer);
-        }catch (Exception e){
-            throw new ApiRequestException(e.getMessage());
-        }
-        order.setCustomer(customer);
+            order.setCustomer(customer);
 
-        //TODO -- validity of restaurant_id
-        // need to call Restaurant microservice
+            //TODO -- validity of restaurant_id
+            // need to call Restaurant microservice
 
-        RestaurantAddress restaurantAddress = new RestaurantAddress(15,"Guwahati","Guwahati","Assam","782410","Khanapara");
-        Restaurant restaurant = new Restaurant(123,"Once more Hotel",restaurantAddress);
+            RestaurantAddress restaurantAddress = new RestaurantAddress(15, "Guwahati", "Guwahati", "Assam", "782410", "Khanapara");
+            Restaurant restaurant = new Restaurant(123, "Once more Hotel", restaurantAddress);
 
-        try{
             restaurantAddressRepository.save(restaurantAddress);
             restaurantRepository.save(restaurant);
-        }catch (Exception e){
-            throw new ApiRequestException(e.getMessage());
-        }
 
-        order.setRestaurant(restaurant);
+            order.setRestaurant(restaurant);
 
 
-
-        //order has everything we need
-        try {
+            //order has everything we need
             order = orderRepository.save(order);
+
+            //TODO -- delete cart by cart _id
+
+            return order;
+
         }catch (Exception e){
-            throw new ApiRequestException(e.getMessage());
+            throw new ApiRequestException("Invalid request body!");
         }
-
-        //TODO -- delete cart by cart _id
-
-       return order;
 
     }
 
@@ -150,7 +133,7 @@ public class OrderService {
         try {
             orders = orderRepository.findAll();
         }catch (Exception e){
-            throw new ApiRequestException(e.getMessage());
+            throw new ApiRequestException("Some error occurred!");
         }
 
            return orders;
@@ -165,7 +148,7 @@ public class OrderService {
                 throw new ApiRequestException("No order details found");
             }
         }catch (Exception e){
-            throw new ApiRequestException(e.getMessage());
+            throw new ApiRequestException("Some error occurred!");
         }
         return order.get();
 
@@ -177,7 +160,7 @@ public class OrderService {
         try {
             orders = orderRepository.findAllByCustomer_Id(customer_id);
         }catch (Exception e){
-            throw new ApiRequestException(e.getMessage());
+            throw new ApiRequestException("Some error occurred!");
         }
 
         return orders;
@@ -189,7 +172,7 @@ public class OrderService {
         try {
             orders = orderRepository.findAllByRestaurant_Id(restaurant_id);
         }catch (Exception e){
-            throw new ApiRequestException(e.getMessage());
+            throw new ApiRequestException("Some error occurred!");
         }
 
         return orders;
@@ -221,9 +204,10 @@ public class OrderService {
 
         return checkoutResponse;
 
-
-
     }
+
+
+
 
 
 }

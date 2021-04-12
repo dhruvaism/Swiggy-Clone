@@ -46,6 +46,7 @@ public class Order {
     @JoinColumn(name = "restaurant_id", referencedColumnName = "id")
     private Restaurant restaurant;
 
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bill_id")
     Bill bill;

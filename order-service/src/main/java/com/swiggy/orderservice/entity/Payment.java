@@ -20,10 +20,16 @@ public class Payment {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "transaction_id",unique = true, nullable = false)
     private String transaction_id;
-    private int amount;
+
+    @Column(nullable = false)
+    private double amount;
+
+    @Column(nullable = false)
     private String transaction_date;
 
+    @Column(nullable = false)
     private boolean has_order;
 
 

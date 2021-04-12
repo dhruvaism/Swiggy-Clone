@@ -6,7 +6,6 @@ import java.util.List;
 
 @Getter
 public class OrderRequestBody {
-    private int customer_id;
     private int restaurant_id;
     private int address_id;
     private int payment_id;

@@ -14,5 +14,5 @@ public class CartItem {
     private int food_id;
     private String food_name;
     private double price;
-    private int quantiy;
+    private int quantity;
 }
