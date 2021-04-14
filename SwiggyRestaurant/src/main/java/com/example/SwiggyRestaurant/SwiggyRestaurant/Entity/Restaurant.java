@@ -54,7 +54,7 @@ public class Restaurant {
 		@Column(name = "EMAIL_ID", length = 30, nullable = false)
 		private String emailId;
 		
-		@OneToOne(mappedBy = "restaurant", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+		@OneToOne(mappedBy = "restaurant", cascade = CascadeType.ALL)
 		@PrimaryKeyJoinColumn
 		RestaurantAddress restaurantAddress;
 		

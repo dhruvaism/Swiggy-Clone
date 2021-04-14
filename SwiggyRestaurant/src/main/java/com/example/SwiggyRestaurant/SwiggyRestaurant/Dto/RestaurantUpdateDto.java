@@ -1,13 +1,16 @@
 package com.example.SwiggyRestaurant.SwiggyRestaurant.Dto;
 
-import lombok.AllArgsConstructor;
+import javax.persistence.Column;
+import javax.persistence.Id;
+
 import lombok.Data;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-public class RestaurantDto{
+public class RestaurantUpdateDto {
 	
 	private String restaurantId;
 	
@@ -15,12 +18,8 @@ public class RestaurantDto{
 	
 	private boolean restaurantOpen;
 	
+	private int restaurantRatingCount;
+	
 	private int costForTwo;
-	
-	private String emailId;
-	
-	private String phoneNumber;
-	
-	private RestaurantAddressDto restaurantAddressDto;
 	
 }

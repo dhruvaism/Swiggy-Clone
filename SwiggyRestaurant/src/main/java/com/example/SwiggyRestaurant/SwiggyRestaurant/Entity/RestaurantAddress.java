@@ -60,4 +60,5 @@ public class RestaurantAddress {
 	@JsonBackReference
 	@JoinColumn(name = "restaurant_id")
 	Restaurant restaurant;
+	
 }

@@ -3,11 +3,19 @@ package com.example.SwiggyRestaurant.SwiggyRestaurant.Service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.RestaurantDto;
+import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.RestaurantUpdateDto;
+import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.UpdateResponse;
+import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.StatusDto;
 import com.example.SwiggyRestaurant.SwiggyRestaurant.Entity.Restaurant;
+import com.example.SwiggyRestaurant.SwiggyRestaurant.Entity.RestaurantAddress;
 import com.example.SwiggyRestaurant.SwiggyRestaurant.Repository.RestaurantAddressRepository;
 import com.example.SwiggyRestaurant.SwiggyRestaurant.Repository.RestaurantRepository;
 
@@ -20,14 +28,18 @@ public class RestaurantService {
 	@Autowired
 	RestaurantAddressRepository restaurantAddressRepository;
 
+	@Autowired
+	ModelMapper modelMapper;
 	
-	public Restaurant getRestaurant(String restaurantId) {
+	public RestaurantDto getRestaurant(String restaurantId) {
 		Optional<Restaurant> restaurant = restaurantRepository.findById(restaurantId);
+		RestaurantDto restaurantDto = new RestaurantDto();
 		if (restaurant.isEmpty()) {
 			return null;
 		}
 		Restaurant restaurant1 = restaurant.get();
-		return restaurant1;
+		modelMapper.map(restaurant1, restaurantDto);
+		return restaurantDto;
 	}
 	
 	public List<Restaurant> getAllRestaurants() {
@@ -35,29 +47,46 @@ public class RestaurantService {
 		return restaurants;
 	}
 
-	public Restaurant addRestaurant(Restaurant restaurant) {
+	public StatusDto addRestaurant(RestaurantDto restaurantDto) {
+		Restaurant restaurant = new Restaurant();
+		RestaurantAddress restaurantAddress = new RestaurantAddress();
+		
+		modelMapper.map(restaurantDto, restaurant);
+		modelMapper.map(restaurantDto.getRestaurantAddressDto(), restaurantAddress);
+		restaurantAddress.setRestaurantAddressId(restaurant.getRestaurantId());
+		StatusDto statusDto = new StatusDto();
+		
 		try {
-			Restaurant restaurant1 = restaurantRepository.save(restaurant);
-			return restaurant1;
+			restaurantRepository.save(restaurant);
+			restaurantAddressRepository.save(restaurantAddress);
+			statusDto.setStatus(HttpStatus.CREATED);
+			statusDto.setDescription("Successfully Registered");
 		}
-		catch(Exception ex) {
-			return null;
+		catch (Exception e) {
+			statusDto.setStatus(HttpStatus.PARTIAL_CONTENT);
+			statusDto.setDescription("Please fill all details");
 		}
+		return statusDto;
 	}
 
-	public String updateRestaurant(Restaurant restaurant) {
+	public UpdateResponse updateRestaurant(RestaurantUpdateDto restaurant) {;
 		Optional<Restaurant> restaurant1 = restaurantRepository.findById(restaurant.getRestaurantId());
-		
+		UpdateResponse updateResponse = new UpdateResponse();
+		StatusDto updateStatus = new StatusDto();
 		if (restaurant1.isEmpty()) {
-			return "Restaurant Not Found";
+			updateStatus.setStatus(HttpStatus.NOT_FOUND);;
+			updateStatus.setDescription("Invalid ID");
+			updateResponse.setUpdateStatus(updateStatus);
 		}
-		
-		ModelMapper modelMapper = new ModelMapper();
-		
-		Restaurant restaurantRef = restaurant1.get();
-		restaurantRef = modelMapper.map(restaurant, Restaurant.class);
-		restaurantRepository.save(restaurantRef);
-		return "Successfully Updated";
+		else {
+			Restaurant restaurantRef = restaurant1.get();
+			modelMapper.map(restaurant, restaurantRef);
+			updateStatus.setStatus(HttpStatus.ACCEPTED);
+			updateStatus.setDescription("Updated");
+			updateResponse.setUpdateStatus(updateStatus);
+			updateResponse.setData(restaurant);
+		}
+		return updateResponse;
 	}
 
 	public String deleteRestaurant(String restaurantId) {
