@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class cartItemService {
@@ -20,43 +21,38 @@ public class cartItemService {
     @Autowired
     private cartItemrepository itemrepo;
 
-    public String removeCartItem(long cartItemid) {
-        try {
-            cartItem item=itemrepo.findById(cartItemid).get();
-            Cart cart= item.getCart();
-            Food food= item.getFood().get(0);
-            cart.setTotal_price(cart.getTotal_price()-(item.getQuantity()*food.getPrice()));
-            itemrepo.delete(item);
-            cartrepo.save(cart);
-            return "delete suffessfull";
-        }
-        catch(Exception e)
-        {
-            return "delete failed";
-        }
-    }
+//    public String removeCartItem(long cartItemid) {
+//        try {
+//            cartItem item=itemrepo.findById(cartItemid).get();
+//            Cart cart= item.getCart();
+//            Food food= item.getFood().get(0);
+//            cart.setTotal_price(cart.getTotal_price()-(item.getQuantity()*food.getPrice()));
+//            itemrepo.delete(item);
+//            cartrepo.save(cart);
+//            return "delete suffessfull";
+//        }
+//        catch(Exception e)
+//        {
+//            return "delete failed";
+//        }
+//    }
 
     public String addItem(long cartid,long foodid, cartItem entity) {
+        Cart cart;
         try {
-            Cart cart=cartrepo.findById(cartid).get();
-            Food food= foodrepo.getOne(foodid);
-            cart.setTotal_price(cart.getTotal_price()+(food.getPrice()*entity.getQuantity()));
-            entity.setCart(cart);
-            entity.addFood(food);
-            food.addCart(entity);
-            itemrepo.save(entity);
+            cart=cartrepo.findById(cartid).get();
         }
         catch (Exception e)
         {
-            Cart cart= new Cart();
-            Food food= foodrepo.getOne(foodid);
-            cart.setTotal_price(cart.getTotal_price()+(food.getPrice()*entity.getQuantity()));
-            cartrepo.save(cart);
-            entity.setCart(cart);
-            entity.addFood(food);
-            food.addCart(entity);
-            itemrepo.save(entity);
+            cart= new Cart();
         }
+        Food food= foodrepo.getOne(foodid);
+        cart.setTotal_price(cart.getTotal_price()+(food.getPrice()*entity.getQuantity()));
+        cartrepo.save(cart);
+        entity.setCart(cart);
+        entity.addFood(food);
+        food.addCart(entity);
+        itemrepo.save(entity);
         return "add successful";
     }
 

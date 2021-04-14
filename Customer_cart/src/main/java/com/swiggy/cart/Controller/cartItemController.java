@@ -17,21 +17,23 @@ public class cartItemController {
     @Autowired
     private cartService cartservice;
 
+
     /**
-     * Description: It will show the cart item of 'cartItemId'.
+     * Description: It will show the cart item of 'cartId'.
      * Access: Admin, Users.
-     * @param cartItemId -It is primary key of entity cartItem
+     * @param cartId -It is primary key of entity cartItem
      * @return -List of cart item.
      */
-    @GetMapping("/cartitem/{cartItemId}/")
-    public List<cartItem> viewCartItem(@PathVariable String cartItemId)
+    @GetMapping("/cartitem/{cartId}/")
+    public List<cartItem> viewCartItem(@PathVariable String cartId)
     {
-        return itemservice.viewCartItem(Long.parseLong(cartItemId));
+        return itemservice.viewCartItem(Long.parseLong(cartId));
     }
+
 
     /**
      * Description: Use for add a food in cartIem
-     * Access: Admin, Users
+     * Access: Users
      * @param cartid -
      * @param foodid -
      * @param entity -
@@ -46,12 +48,19 @@ public class cartItemController {
                 Long.parseLong(foodid), entity);
     }
 
-    @DeleteMapping("/cartitem/{itemid}/")
-    public String removeItem(@PathVariable String itemid)
-    {
-        return itemservice.removeCartItem(Long.parseLong(itemid));
-    }
+//    @DeleteMapping("/cartitem/{itemid}/")
+//    public String removeItem(@PathVariable String itemid)
+//    {
+//        return itemservice.removeCartItem(Long.parseLong(itemid));
+//    }
 
+    /**
+     * Description:
+     * Access: User
+     * @param itemid
+     * @param quantity
+     * @return
+     */
     @PutMapping("/cartitem/{itemid}/{quantity}/")
     public String updateQuantity(@PathVariable String itemid,
                                  @PathVariable String quantity)
