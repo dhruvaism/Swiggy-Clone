@@ -21,7 +21,7 @@ public class Cart {
 
     private double total_price;
     private double discount;
-    private String suggestion;
+    private String suggestion="";
 
 
     @ToString.Exclude

@@ -61,5 +61,9 @@ public class foodController {
     {
         return this.service.updatePrice(Long.parseLong(foodId), Double.parseDouble(price));
     }
-
+    @PutMapping("/food/availability/{foodId}/{available}/")
+    public String updateAvailability(@PathVariable String foodId, @PathVariable String available)
+    {
+        return service.updateAvailability(Long.parseLong(foodId), Boolean.parseBoolean(available));
+    }
 }

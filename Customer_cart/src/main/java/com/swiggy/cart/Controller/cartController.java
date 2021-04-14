@@ -48,4 +48,10 @@ public class cartController {
     {
         return cartservice.clearCart(Long.parseLong(cartId));
     }
+
+    @PutMapping("cart/{cartId}/")
+    public String descriptionUpdate(@PathVariable String cartId, @RequestBody String description)
+    {
+        return cartservice.descriptionUpdate(Long.parseLong(cartId), description);
+    }
 }

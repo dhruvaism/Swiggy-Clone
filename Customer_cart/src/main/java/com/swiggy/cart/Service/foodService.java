@@ -76,4 +76,11 @@ public class foodService {
         repository.save(food);
         return "price updated";
     }
+
+    public String updateAvailability(long foodId, boolean available) {
+        Food food= repository.findById(foodId).get();
+        food.setAvailability(available);
+        repository.save(food);
+        return "Availability "+available;
+    }
 }

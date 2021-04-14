@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class cartItemService {
@@ -23,6 +22,9 @@ public class cartItemService {
 
 
     public String addItem(long cartid,long foodid, cartItem entity) {
+        Food food= foodrepo.getOne(foodid);
+        if(food.isAvailability()==false)
+            return "item is not Available";
         Cart cart;
         try {
             cart=cartrepo.findById(cartid).get();
@@ -31,13 +33,13 @@ public class cartItemService {
         {
             cart= new Cart();
         }
-        Food food= foodrepo.getOne(foodid);
         if(cart.getItemlist().size()!=0)
         {
             List<cartItem> list= cart.getItemlist();
             for(cartItem item: list)
             {
-                if(item.getFood().get(0).getFoodId()==foodid) return "Item present in cart";
+                if(item.getFood().get(0).getFoodId()==foodid)
+                    return "Item present in cart";
             }
         }
         cart.setTotal_price(cart.getTotal_price()+(food.getPrice()*entity.getQuantity()));

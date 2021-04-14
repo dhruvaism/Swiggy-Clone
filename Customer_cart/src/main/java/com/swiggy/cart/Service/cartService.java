@@ -40,4 +40,11 @@ public class cartService {
         }
     }
 
+
+    public String descriptionUpdate(long cartId, String description) {
+        Cart cart= cartrepo.findById(cartId).get();
+        cart.setSuggestion(description);
+        cartrepo.save(cart);
+        return description;
+    }
 }
