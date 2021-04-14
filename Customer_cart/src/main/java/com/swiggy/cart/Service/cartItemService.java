@@ -21,21 +21,6 @@ public class cartItemService {
     @Autowired
     private cartItemrepository itemrepo;
 
-//    public String removeCartItem(long cartItemid) {
-//        try {
-//            cartItem item=itemrepo.findById(cartItemid).get();
-//            Cart cart= item.getCart();
-//            Food food= item.getFood().get(0);
-//            cart.setTotal_price(cart.getTotal_price()-(item.getQuantity()*food.getPrice()));
-//            itemrepo.delete(item);
-//            cartrepo.save(cart);
-//            return "delete suffessfull";
-//        }
-//        catch(Exception e)
-//        {
-//            return "delete failed";
-//        }
-//    }
 
     public String addItem(long cartid,long foodid, cartItem entity) {
         Cart cart;
@@ -47,6 +32,14 @@ public class cartItemService {
             cart= new Cart();
         }
         Food food= foodrepo.getOne(foodid);
+        if(cart.getItemlist().size()!=0)
+        {
+            List<cartItem> list= cart.getItemlist();
+            for(cartItem item: list)
+            {
+                if(item.getFood().get(0).getFoodId()==foodid) return "Item present in cart";
+            }
+        }
         cart.setTotal_price(cart.getTotal_price()+(food.getPrice()*entity.getQuantity()));
         cartrepo.save(cart);
         entity.setCart(cart);
@@ -66,17 +59,20 @@ public class cartItemService {
         int new_quantity=quantity+item.getQuantity();
         Cart cart= item.getCart();
         Food food= item.getFood().get(0);
+        String str="";
         if(new_quantity==0)
         {
             itemrepo.delete(item);
+            str= "item removed";
         }
         else
         {
             item.setQuantity(new_quantity);
             itemrepo.save(item);
+            str="quantity updatedd";
         }
         cart.setTotal_price(cart.getTotal_price()+(quantity*food.getPrice()));
         cartrepo.save(cart);
-        return "quantity updatedd";
+        return str;
     }
 }

@@ -48,11 +48,6 @@ public class cartItemController {
                 Long.parseLong(foodid), entity);
     }
 
-//    @DeleteMapping("/cartitem/{itemid}/")
-//    public String removeItem(@PathVariable String itemid)
-//    {
-//        return itemservice.removeCartItem(Long.parseLong(itemid));
-//    }
 
     /**
      * Description:
