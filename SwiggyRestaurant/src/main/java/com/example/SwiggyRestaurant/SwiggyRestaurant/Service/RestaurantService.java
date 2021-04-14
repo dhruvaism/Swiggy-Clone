@@ -46,7 +46,27 @@ public class RestaurantService {
 		List<Restaurant> restaurants = restaurantRepository.findAll();
 		return restaurants;
 	}
-
+	/**
+	 * 
+	 * {
+        	"restaurantId": "5",
+        	"restaurantName": "hotel1",
+        	"restaurantOpen": true,
+        	"costForTwo": 200,
+        	"emailId": "restaurant2@email.com",
+        	"phoneNumber": "1234567330",
+        	"restaurantAddressDto": {
+            	"streetName": "Abcd",
+	        	"pincode": 123,
+	        	"locationCoOrdinate": "123.321.22",
+	        	"manualAddress": "bjkdbjh",
+	        	"landmark": "bjkswb",
+	        	"city": "bangalore"
+        	}
+    	}
+	 * @param restaurantDto
+	 * @return
+	 */
 	public StatusDto addRestaurant(RestaurantDto restaurantDto) {
 		Restaurant restaurant = new Restaurant();
 		RestaurantAddress restaurantAddress = new RestaurantAddress();

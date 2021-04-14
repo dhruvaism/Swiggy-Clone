@@ -20,7 +20,7 @@ public class RestaurantDto{
 	private String emailId;
 	
 	private String phoneNumber;
-	
+	// this object is mapped to restaurantAddress entity
 	private RestaurantAddressDto restaurantAddressDto;
 	
 }
