@@ -19,7 +19,7 @@ public class cartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long cartItemId;
-    private int quantity;
+    private int quantity=1;
 
     @ManyToOne
     @JsonBackReference

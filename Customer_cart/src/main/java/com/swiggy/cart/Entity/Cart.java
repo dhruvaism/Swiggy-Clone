@@ -19,7 +19,7 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long cartId;
 
-    private double price;
+    private double total_price;
     private double discount;
     private String suggestion;
 

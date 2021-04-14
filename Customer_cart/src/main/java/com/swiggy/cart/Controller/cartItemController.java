@@ -56,6 +56,9 @@ public class cartItemController {
     public String updateQuantity(@PathVariable String itemid,
                                  @PathVariable String quantity)
     {
-        return itemservice.updateQuantity(Long.parseLong(itemid), Integer.parseInt(quantity));
+        int int_quantity=0;
+        if(quantity.equals("inc")) int_quantity=1;
+        else int_quantity=-1;
+        return itemservice.updateQuantity(Long.parseLong(itemid), int_quantity);
     }
 }

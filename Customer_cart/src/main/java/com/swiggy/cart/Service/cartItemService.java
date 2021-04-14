@@ -25,7 +25,7 @@ public class cartItemService {
             cartItem item=itemrepo.findById(cartItemid).get();
             Cart cart= item.getCart();
             Food food= item.getFood().get(0);
-            cart.setPrice(cart.getPrice()-(item.getQuantity()*food.getPrice()));
+            cart.setTotal_price(cart.getTotal_price()-(item.getQuantity()*food.getPrice()));
             itemrepo.delete(item);
             cartrepo.save(cart);
             return "delete suffessfull";
@@ -40,7 +40,7 @@ public class cartItemService {
         try {
             Cart cart=cartrepo.findById(cartid).get();
             Food food= foodrepo.getOne(foodid);
-            cart.setPrice(cart.getPrice()+(food.getPrice()*entity.getQuantity()));
+            cart.setTotal_price(cart.getTotal_price()+(food.getPrice()*entity.getQuantity()));
             entity.setCart(cart);
             entity.addFood(food);
             food.addCart(entity);
@@ -50,7 +50,7 @@ public class cartItemService {
         {
             Cart cart= new Cart();
             Food food= foodrepo.getOne(foodid);
-            cart.setPrice(cart.getPrice()+(food.getPrice()*entity.getQuantity()));
+            cart.setTotal_price(cart.getTotal_price()+(food.getPrice()*entity.getQuantity()));
             cartrepo.save(cart);
             entity.setCart(cart);
             entity.addFood(food);
@@ -67,12 +67,19 @@ public class cartItemService {
 
     public String updateQuantity(long itemid, int quantity) {
         cartItem item= itemrepo.findById(itemid).get();
-        int new_quantity=quantity-item.getQuantity();
-        item.setQuantity(quantity);
-        itemrepo.save(item);
+        int new_quantity=quantity+item.getQuantity();
         Cart cart= item.getCart();
         Food food= item.getFood().get(0);
-        cart.setPrice(cart.getPrice()+(new_quantity*food.getPrice()));
+        if(new_quantity==0)
+        {
+            itemrepo.delete(item);
+        }
+        else
+        {
+            item.setQuantity(new_quantity);
+            itemrepo.save(item);
+        }
+        cart.setTotal_price(cart.getTotal_price()+(quantity*food.getPrice()));
         cartrepo.save(cart);
         return "quantity updatedd";
     }
