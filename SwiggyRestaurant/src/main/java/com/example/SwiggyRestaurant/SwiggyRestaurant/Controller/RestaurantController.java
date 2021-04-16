@@ -25,18 +25,22 @@ public class RestaurantController {
 	RestaurantService restaurantService;
 	
 	@GetMapping("/restaurants")
-	public List<RestaurantDto> getAllRestaurants() { 
-		List<RestaurantDto> restaurants = restaurantService.getAllRestaurants();
-		return restaurants;
+	public RequestResponse getAllRestaurants() { 
+		return restaurantService.getAllRestaurants();
 	}
 	
 	@GetMapping("/restaurant/{id}")
-	public RestaurantDto getRestaurant(@PathVariable("id") String restaurantId) {
+	public RequestResponse getRestaurant(@PathVariable("id") String restaurantId) {
 		return restaurantService.getRestaurant(restaurantId);
 	}
 	
+	@GetMapping("/restaurant/search/name/{name}")
+	public RequestResponse searchRestaurantByName(@PathVariable("name") String name) {
+		return restaurantService.searchRestaurantByCity(name);
+	}
+	
 	@GetMapping("/restaurant/search/city/{cityname}")
-	public List<RestaurantDto> searchRestaurantByCity(@PathVariable("cityname") String cityName) {
+	public RequestResponse searchRestaurantByCity(@PathVariable("cityname") String cityName) {
 		return restaurantService.searchRestaurantByCity(cityName);
 	}
 	
@@ -46,7 +50,7 @@ public class RestaurantController {
 	}
 	
 	@PostMapping("/restaurant")
-	public StatusDto addRestaurant(@RequestBody RestaurantDto restaurant) {
+	public RequestResponse addRestaurant(@RequestBody RestaurantDto restaurant) {
 		return restaurantService.addRestaurant(restaurant);
 	}
 	
