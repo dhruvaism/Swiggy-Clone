@@ -15,10 +15,10 @@ public class Delivery {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private int orderId;
+    private String deliveryDateTime;
     @JsonBackReference
     @ManyToOne //One Delivery is done by a single Delivery Person
     private DeliveryPerson deliveryPerson;
-    private int orderId;
-    private String deliveryDateTime;
 
 }

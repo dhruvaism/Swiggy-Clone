@@ -1,7 +1,8 @@
-package com.masai.app.swiggy_delivery.entity;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+package com.masai.app.swiggy_delivery.dto;
+
+import com.masai.app.swiggy_delivery.entity.Delivery;
 import lombok.*;
-import javax.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,10 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-@Entity
-public class DeliveryPerson {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class DeliveryPersonDto {
     private int id;
     private String name;
     private long phoneNo;
@@ -22,9 +20,5 @@ public class DeliveryPerson {
     private boolean isAvailable;
     private int ratingCount;
     private double rating;
-
-    @JsonManagedReference
-    @OneToMany(mappedBy="deliveryPerson") // One Delivery Person can do multiple Deliveries
     private List<Delivery> deliveries=new ArrayList<>();
-
 }
