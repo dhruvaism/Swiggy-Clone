@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.RestaurantDto;
 import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.RestaurantUpdateDto;
 import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.StatusDto;
-import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.UpdateResponse;
-import com.example.SwiggyRestaurant.SwiggyRestaurant.Entity.Restaurant;
+import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.RequestResponse;
+import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.RestaurantAddressDto;
 import com.example.SwiggyRestaurant.SwiggyRestaurant.Service.RestaurantService;
 
 @RestController
@@ -25,8 +25,8 @@ public class RestaurantController {
 	RestaurantService restaurantService;
 	
 	@GetMapping("/restaurants")
-	public List<Restaurant> getAllRestaurants() { 
-		List<Restaurant> restaurants = restaurantService.getAllRestaurants();
+	public List<RestaurantDto> getAllRestaurants() { 
+		List<RestaurantDto> restaurants = restaurantService.getAllRestaurants();
 		return restaurants;
 	}
 	
@@ -35,11 +35,15 @@ public class RestaurantController {
 		return restaurantService.getRestaurant(restaurantId);
 	}
 	
-//	@GetMapping("/restaurant/search/city/{cityname}")
-//	public List<Restaurant> searchRestaurantByCity(@PathVariable("cityname") String cityName) {
-//		List<Restaurant> restaurants = restaurantService.searchRestaurantByCity(cityName);
-//		return restaurants;
-//	}
+	@GetMapping("/restaurant/search/city/{cityname}")
+	public List<RestaurantDto> searchRestaurantByCity(@PathVariable("cityname") String cityName) {
+		return restaurantService.searchRestaurantByCity(cityName);
+	}
+	
+	@PutMapping("restaurant/{id}/address")
+	public RequestResponse updateAddress(@PathVariable("id") String restaurantId, @RequestBody RestaurantAddressDto restaurantAddress) {
+		return restaurantService.updateAddress(restaurantId, restaurantAddress);
+	}
 	
 	@PostMapping("/restaurant")
 	public StatusDto addRestaurant(@RequestBody RestaurantDto restaurant) {
@@ -47,16 +51,14 @@ public class RestaurantController {
 	}
 	
 	@PutMapping("/restaurant")
-	public UpdateResponse updateRestaurant(@RequestBody 
+	public RequestResponse updateRestaurant(@RequestBody 
 			RestaurantUpdateDto updateDetails) {
 		return restaurantService.updateRestaurant(updateDetails);
 	}
 	
 	@DeleteMapping("/restaurant/{id}")
-	public String deleteRestaurant(@PathVariable("id") String restaurantId) {
-		String message = restaurantService.deleteRestaurant(restaurantId);
-		return message;
+	public RequestResponse deleteRestaurant(@PathVariable("id") String restaurantId) {
+		return restaurantService.deleteRestaurant(restaurantId);
 	}
-	//bflgbhjqegfyuq vgf u
 	
 }

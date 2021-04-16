@@ -48,10 +48,10 @@ public class Restaurant {
 		@Column(name = "Last_Update", nullable = false)
 		private LocalDateTime lastUpdate;
 		
-		@Column(name = "PHONE_NUMBER", length = 12, nullable = false)
+		@Column(name = "PHONE_NUMBER", length = 12)
 		private String phoneNumber;
 		
-		@Column(name = "EMAIL_ID", length = 30, nullable = false)
+		@Column(name = "EMAIL_ID", length = 30)
 		private String emailId;
 		
 		@OneToOne(mappedBy = "restaurant", cascade = CascadeType.ALL)

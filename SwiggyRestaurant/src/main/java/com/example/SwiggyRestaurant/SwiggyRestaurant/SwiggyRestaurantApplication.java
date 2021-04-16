@@ -11,6 +11,7 @@ public class SwiggyRestaurantApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SwiggyRestaurantApplication.class, args);
 	}
+	
 	@Bean
 	public ModelMapper modelMapper(){
 		ModelMapper modelMapper = new ModelMapper();

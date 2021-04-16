@@ -1,5 +1,7 @@
 package com.example.SwiggyRestaurant.SwiggyRestaurant.Dto;
 
+
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +23,6 @@ public class RestaurantDto{
 	
 	private String phoneNumber;
 	// this object is mapped to restaurantAddress entity
-	private RestaurantAddressDto restaurantAddressDto;
+	private RestaurantAddressDto restaurantAddress;
 	
 }

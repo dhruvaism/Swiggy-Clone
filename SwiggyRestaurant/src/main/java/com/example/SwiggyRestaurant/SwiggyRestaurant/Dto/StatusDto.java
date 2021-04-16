@@ -12,5 +12,7 @@ import lombok.NoArgsConstructor;
 public class StatusDto {
 	
 	private String description;
+	
 	private HttpStatus status;
+	
 }

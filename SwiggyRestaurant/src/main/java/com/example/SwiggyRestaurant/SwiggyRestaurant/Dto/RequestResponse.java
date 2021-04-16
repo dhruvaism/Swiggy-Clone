@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateResponse {
+public class RequestResponse {
 	
-	RestaurantUpdateDto Data;
+	Object Data;
 	StatusDto updateStatus;
 	
 }
