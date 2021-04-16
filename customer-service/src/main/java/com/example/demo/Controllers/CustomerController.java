@@ -20,6 +20,7 @@ import com.example.demo.Service.CustomerService;
 import com.example.demo.dto.Addressdto;
 import com.example.demo.dto.StatusDto;
 import com.example.demo.dto.Customerdto;
+import com.example.demo.dto.Response;
 import com.example.demo.model.Address;
 import com.example.demo.model.Customer;
 
@@ -45,10 +46,11 @@ public class CustomerController {
 	 * @return StatusDto
 	 */
 	@PostMapping("/register")
-	public StatusDto register(@RequestBody Customerdto req)
+	public Response register(@RequestBody Customer req)
 	{
-		StatusDto temp=customerService.register(req);
-		return temp;
+		Customer temp=customerService.register(req);
+		Response response=new Response(temp,"Account created Sucessfully",true);
+		return response;
 	}
 	
 	
@@ -68,10 +70,15 @@ public class CustomerController {
    * @param id
    * @return Customer object
    */
-	@GetMapping("/lock/user/{id}")
-	public  Customer findcustomer(@PathVariable int id){
+	@GetMapping("/user/{id}")
+	public  Response findcustomer(@PathVariable int id){
 		
-            return customerService.findcustomer(id);
+		Customerdto customerdto=customerService.findcustomer(id);
+		//System.out.println(customerdto.toString());
+           Response response=new Response(customerdto,true);
+            
+           // System.out.println(response.getData().toString()); 
+            return response;
 	}
 	
    /**
@@ -104,7 +111,7 @@ public class CustomerController {
      * @param id
      * @return response entity
      */
-	@GetMapping("/lock/user/{id}/alladdress")
+	@GetMapping("/user/{id}/alladdress")
 	public  ResponseEntity<List<Address>> get_address_details(@PathVariable int id){
 		
          

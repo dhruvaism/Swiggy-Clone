@@ -8,7 +8,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.example.demo.dto.StatusDto;
+import com.example.demo.Exceptions.ApiRequestException;
 import com.example.demo.dto.Customerdto;
+import com.example.demo.dto.Response;
 import com.example.demo.model.Address;
 import com.example.demo.model.Customer;
 import com.example.demo.repositories.CustomerRepository;
@@ -41,17 +43,16 @@ public class CustomerService {
       	 return customerStatusDto;
 	}
 	
-	public StatusDto register(Customerdto ob)
+	public Customer register(Customer customer)
 	{
-		
-		StatusDto customerStatusDto =new StatusDto();
-		Customer customer=ob.getOb();
+		Customer ob=customerRepository.getuserByemail(customer.getEmail());
+		if(ob!=null)
+			throw new ApiRequestException("User already exist");
+		System.out.println(customer.toString());
 		customer.setPassword(encoder.encode(customer.getPassword()));
-		customerRepository.save(customer);
+		customer=customerRepository.save(customer);
+		return customer;
 		
-		customerStatusDto.setStatus(true);
-		customerStatusDto.setDescription("Successfully Updated");
-		return customerStatusDto;
 	}
 	
 	public List<Customer> findall()
@@ -59,10 +60,26 @@ public class CustomerService {
 		return customerRepository.findAll();
 	}
 	
-	public Customer  findcustomer(int customerId)
+	public Customerdto  findcustomer(int customerId)
 	{
+		try
+		{
 		 Optional<Customer>customer=customerRepository.findById(customerId);
-         return customer.get();
+		 if(customer.isPresent())
+		 {
+		 
+         Customer cust= customer.get();
+        Customerdto customerDto=new 
+        		 Customerdto(cust.getId(), cust.getName(), cust.getEmail(),""+cust.getPhone_no(), cust.getAdr());
+        return customerDto;
+		 }
+		 else
+			 throw new ApiRequestException("Id not present");
+		}
+		catch(Exception e)
+		{
+			throw new ApiRequestException("Some error occured"); 
+		}
 	}
 	
 	public StatusDto deletecustomerbyid(int customerId)
