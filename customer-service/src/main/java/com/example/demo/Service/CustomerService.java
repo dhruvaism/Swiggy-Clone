@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.example.demo.dto.StatusDto;
@@ -21,9 +20,7 @@ public class CustomerService {
 	@Autowired
 	CustomerRepository customerRepository;
 	
-	@Autowired
-	private BCryptPasswordEncoder encoder;
-	
+
 	public  StatusDto update_customer(int customerId){
 	    
 		Optional<Customer> ob=customerRepository.findById(customerId);
@@ -49,7 +46,6 @@ public class CustomerService {
 		if(ob!=null)
 			throw new ApiRequestException("User already exist");
 		System.out.println(customer.toString());
-		customer.setPassword(encoder.encode(customer.getPassword()));
 		customer=customerRepository.save(customer);
 		return customer;
 		
@@ -62,24 +58,17 @@ public class CustomerService {
 	
 	public Customerdto  findcustomer(int customerId)
 	{
-		try
-		{
+
 		 Optional<Customer>customer=customerRepository.findById(customerId);
-		 if(customer.isPresent())
-		 {
+
+		 if(!customer.isPresent()) {
+			 throw new ApiRequestException("user doesn't exist");
+		 }
 		 
          Customer cust= customer.get();
-        Customerdto customerDto=new 
-        		 Customerdto(cust.getId(), cust.getName(), cust.getEmail(),""+cust.getPhone_no(), cust.getAdr());
-        return customerDto;
-		 }
-		 else
-			 throw new ApiRequestException("Id not present");
-		}
-		catch(Exception e)
-		{
-			throw new ApiRequestException("Some error occured"); 
-		}
+         Customerdto customerDto=new Customerdto(cust.getId(), cust.getName(), cust.getEmail(),cust.getPhone_no(), cust.getAdr());
+         return customerDto;
+
 	}
 	
 	public StatusDto deletecustomerbyid(int customerId)

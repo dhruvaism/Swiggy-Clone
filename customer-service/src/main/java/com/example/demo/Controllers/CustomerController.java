@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -59,7 +58,7 @@ public class CustomerController {
     * Description:  To get all the details of Customers
     * @return List of customers
     */
-	@GetMapping("/lock/user")
+	@GetMapping("/user")
 	public List<Customer> findall(){
 		
 		return customerService.findall();
@@ -86,7 +85,7 @@ public class CustomerController {
     * @param id
     * @return StatuseDto
     */
-	@DeleteMapping("/lock/user/{id}")
+	@DeleteMapping("/user/{id}")
 	public StatusDto deletecustomerbyid(@PathVariable int id){
 		
             return customerService.deletecustomerbyid(id);
@@ -99,7 +98,7 @@ public class CustomerController {
     * @param address_id
     * @return statusDto
     */
-	@PutMapping("/lock/address/{id}/")
+	@PutMapping("/address/{id}/")
 	public  StatusDto updateAddress(@RequestBody Addressdto addressdto,@PathVariable int id){
 		
          return addressService.updateAddress(addressdto, id);
@@ -126,7 +125,7 @@ public class CustomerController {
      * @param id
      * @return
      */
-	@PutMapping("/lock/user/{id}")
+	@PutMapping("/user/{id}")
 	public  StatusDto update_customer(@RequestBody Customerdto tem,@PathVariable int id){
 		
 		 StatusDto ob=customerService.update_customer(id);
