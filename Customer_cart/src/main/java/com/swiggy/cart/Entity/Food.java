@@ -1,6 +1,7 @@
 package com.swiggy.cart.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -27,18 +28,22 @@ public class Food {
     private boolean availability;
     private int rateCount;
 
-    @ManyToMany(mappedBy = "food")
-    @JsonBackReference
-    List<cartItem> cart= new ArrayList<>();
-
-    public void addCart(cartItem item){
-        this.cart.add(item);
-    }
-
-    public void removeStudent(cartItem item){
-        this.cart.remove(item);
-    }
 
     @ManyToOne
     private restaurant res;
+
+    @OneToMany(mappedBy = "food",fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<cartItem> cartItemList = new ArrayList<>();
+
+    public void addCartItem(cartItem item)
+    {
+        this.cartItemList.add(item);
+    }
+
+    public void removeCartItem(cartItem item)
+    {
+        this.cartItemList.remove(item);
+    }
+
 }

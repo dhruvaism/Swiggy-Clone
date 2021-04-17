@@ -1,5 +1,6 @@
 package com.swiggy.cart.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
@@ -7,25 +8,23 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Getter
 @Setter
 @Entity
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long cartId;
+    private long id;
 
     private double total_price;
     private double discount;
+    private long check_res;
     private String suggestion="";
 
-
     @ToString.Exclude
-    @OneToMany(mappedBy = "cart",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<cartItem> itemlist= new ArrayList<>();
 

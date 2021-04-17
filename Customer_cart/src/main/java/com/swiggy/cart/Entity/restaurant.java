@@ -20,7 +20,6 @@ public class restaurant {
 
     private String resName;
 
-    @ToString.Exclude
     @OneToMany(mappedBy = "res",fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Food> foodlist= new ArrayList<>();

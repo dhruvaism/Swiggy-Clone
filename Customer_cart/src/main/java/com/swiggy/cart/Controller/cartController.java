@@ -43,10 +43,10 @@ public class cartController {
      * @param cartId
      * @return
      */
-    @DeleteMapping("/cart/{cartId}/")
+    @PutMapping("/cart1/{cartId}/")
     public String clearCart(@PathVariable String cartId)
     {
-        return cartservice.clearCart(Long.parseLong(cartId));
+         return cartservice.clearCart(Long.parseLong(cartId));
     }
 
     @PutMapping("cart/{cartId}/")

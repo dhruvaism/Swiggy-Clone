@@ -1,9 +1,11 @@
 package com.swiggy.cart.Service;
 
+import com.swiggy.cart.Dto.FoodDto;
 import com.swiggy.cart.Entity.Food;
 import com.swiggy.cart.Entity.restaurant;
 import com.swiggy.cart.Repository.foodRepository;
 import com.swiggy.cart.Repository.resRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +21,16 @@ public class foodService {
     @Autowired
     private resRepository resRepo;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     public String addItem(long resId, Food entity)
     {
         try {
             restaurant res=resRepo.getOne(resId);
             res.addFood(entity);
             entity.setRes(res);
+            entity.setFoodId(entity.getFoodId());
             repository.save(entity);
             return "Done";
         }
@@ -48,11 +54,16 @@ public class foodService {
         repository.save(entity);
         return "Item successfully update";
     }
-    public List<Food> getItem() {
-        return repository.findAll();
+    public List<FoodDto> getItem() {
+        List<Food> allFood= repository.findAll();
+        List<FoodDto> allFoodDto = new ArrayList<FoodDto>();
+        for(Food food: allFood) {
+            allFoodDto.add(modelMapper.map(food, FoodDto.class));
+        }
+        return allFoodDto;
     }
 
-    public List<Food> getItem(String foodcat) {
+    public List<Food> getItemByCategory(String foodcat) {
         List<Food> list=repository.findAll();
         List<Food> listcat= new ArrayList<>();
         for(Food f: list)

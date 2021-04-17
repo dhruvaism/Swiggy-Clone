@@ -9,6 +9,7 @@ import com.swiggy.cart.Repository.foodRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -20,11 +21,12 @@ public class cartItemService {
     @Autowired
     private cartItemrepository itemrepo;
 
-
+    @Transactional
     public String addItem(long cartid,long foodid, cartItem entity) {
         Food food= foodrepo.getOne(foodid);
-        if(food.isAvailability()==false)
+        if(!food.isAvailability())
             return "item is not Available";
+
         Cart cart;
         try {
             cart=cartrepo.findById(cartid).get();
@@ -33,35 +35,53 @@ public class cartItemService {
         {
             cart= new Cart();
         }
+
+
+        if(cart.getCheck_res()!=0 && cart.getCheck_res()!=food.getRes().getResId())
+        {
+            cartrepo.delete(cart);
+            cart= new Cart();
+        }
+
+
         if(cart.getItemlist().size()!=0)
         {
             List<cartItem> list= cart.getItemlist();
             for(cartItem item: list)
             {
-                if(item.getFood().get(0).getFoodId()==foodid)
+                if(item.getFood().getFoodId()==foodid)
                     return "Item present in cart";
             }
         }
+
+
+        cart.setCheck_res(food.getRes().getResId());
         cart.setTotal_price(cart.getTotal_price()+(food.getPrice()*entity.getQuantity()));
-        cartrepo.save(cart);
+
+        entity.setFood(food);
         entity.setCart(cart);
-        entity.addFood(food);
-        food.addCart(entity);
+        cart.addItem(entity);
+        cartrepo.save(cart);
         itemrepo.save(entity);
         return "add successful";
+
     }
+
 
     public List<cartItem> viewCartItem(long id) {
         Cart cart= cartrepo.getOne(id);
         return cart.getItemlist();
     }
 
-    public String updateQuantity(long itemid, int quantity) {
-        cartItem item= itemrepo.findById(itemid).get();
+    public String updateQuantity(long cart_id,long cart_item_id, int quantity) {
+        cartItem item= itemrepo.findById(cart_item_id).get();
         int new_quantity=quantity+item.getQuantity();
-        Cart cart= item.getCart();
-        Food food= item.getFood().get(0);
+        Cart cart= cartrepo.findById(cart_id).get();
+        Food food= item.getFood();
         String str="";
+
+        cart.removeItem(item);
+
         if(new_quantity==0)
         {
             itemrepo.delete(item);
@@ -71,6 +91,7 @@ public class cartItemService {
         {
             item.setQuantity(new_quantity);
             itemrepo.save(item);
+            cart.addItem(item);
             str="quantity updatedd";
         }
         cart.setTotal_price(cart.getTotal_price()+(quantity*food.getPrice()));

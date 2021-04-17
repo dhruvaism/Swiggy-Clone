@@ -1,13 +1,16 @@
 package com.swiggy.cart.Controller;
 
+import com.swiggy.cart.Dto.FoodDto;
 import com.swiggy.cart.Entity.Food;
 import com.swiggy.cart.Service.foodService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping(consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 public class foodController {
 
     @Autowired
@@ -15,20 +18,21 @@ public class foodController {
 
 
     // get all item
-    @GetMapping("/food/get/")
-    public List<Food> getItem()
+    @GetMapping(value="/food/get/", consumes = { MediaType.ALL_VALUE })
+    public List<FoodDto> getItem()
     {
         return this.service.getItem();
     }
 
     //get item by category
     @GetMapping("/food/get/{foodcat}/")
-    public List<Food> getItem(@PathVariable String foodcat)
+    public List<Food> getItemByCategory(@PathVariable String foodcat)
     {
-        return this.service.getItem(foodcat);
+        return this.service.getItemByCategory(foodcat);
     }
 
     // add item into restaurants
+    //@PostMapping(value="/food/{resId}/add/", consumes = "application/json")
     @PostMapping("/food/{resId}/add/")
     public String addItem(@PathVariable String resId, @RequestBody Food entity)
     {

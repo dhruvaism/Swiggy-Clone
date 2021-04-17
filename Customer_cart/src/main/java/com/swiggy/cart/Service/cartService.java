@@ -28,16 +28,23 @@ public class cartService {
     }
 
     public String clearCart(long cartId) {
-        try {
-            List<cartItem> list=itemRepo.findAll();
-            for(cartItem i: list) itemRepo.delete(i);
-            cartrepo.delete(cartrepo.findById(cartId).get());
+//        try {
+            Cart cart=cartrepo.findById(cartId).get();
+            List<cartItem> list=cart.getItemlist();
+            System.out.println(list);
+            for(cartItem i: list)
+            {
+                cart.removeItem(i);
+            }
+            System.out.println(cart.toString());
+            cartrepo.save(cart);
+            //cartrepo.delete(cart);
             return "Cart Deleted";
-        }
-        catch (Exception e)
-        {
-            return "failed to delete";
-        }
+//        }
+//        catch (Exception e)
+//        {
+//            return "failed to delete";
+//        }
     }
 
 

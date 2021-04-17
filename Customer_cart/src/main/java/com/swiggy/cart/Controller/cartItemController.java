@@ -6,6 +6,7 @@ import com.swiggy.cart.Service.cartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @RestController
@@ -39,10 +40,11 @@ public class cartItemController {
      * @param entity -
      * @return
      */
+    @Transactional
     @PostMapping("/cartitem/{cartid}/{foodid}/")
     public String addItem(@PathVariable String cartid,
-                          @PathVariable String foodid,
-                          @RequestBody cartItem entity)
+                        @PathVariable String foodid,
+                        @RequestBody cartItem entity)
     {
         return itemservice.addItem(Long.parseLong(cartid),
                 Long.parseLong(foodid), entity);
@@ -52,17 +54,15 @@ public class cartItemController {
     /**
      * Description:
      * Access: User
-     * @param itemid
+     * @param cart_item_id
      * @param quantity
      * @return
      */
-    @PutMapping("/cartitem/{itemid}/{quantity}/")
-    public String updateQuantity(@PathVariable String itemid,
-                                 @PathVariable String quantity)
+    @PutMapping("cart/{cart_id}/item/{cart_item_id}/update/")
+    public String updateQuantity(@PathVariable long cart_id,@PathVariable long cart_item_id,
+                                 @RequestParam int  quantity)
     {
-        int int_quantity=0;
-        if(quantity.equals("inc")) int_quantity=1;
-        else int_quantity=-1;
-        return itemservice.updateQuantity(Long.parseLong(itemid), int_quantity);
+
+        return itemservice.updateQuantity(cart_id, cart_item_id, quantity);
     }
 }
