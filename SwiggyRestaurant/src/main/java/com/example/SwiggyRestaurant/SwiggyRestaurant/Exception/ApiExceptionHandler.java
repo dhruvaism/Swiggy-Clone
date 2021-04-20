@@ -13,7 +13,6 @@ public class ApiExceptionHandler {
 
         ApiException apiException = new ApiException(
         		exp.getMessage(),
-        		exp,
         		HttpStatus.BAD_REQUEST
         );
         return new ResponseEntity<>(apiException,HttpStatus.BAD_REQUEST);

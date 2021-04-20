@@ -5,11 +5,14 @@ import java.time.LocalDateTime;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.AllArgsConstructor;
@@ -27,9 +30,10 @@ import lombok.ToString;
 public class Restaurant {
 	
 		@Id
-		private String restaurantId;
+		@GeneratedValue
+		private Long restaurantId;
 		
-		@Column(name = "Restaurant_Name", length = 30, nullable = false)
+		@Column(length = 30, nullable = false)
 		private String restaurantName;
 		
 		private int restaurantRating;
@@ -56,6 +60,7 @@ public class Restaurant {
 		
 		@OneToOne(mappedBy = "restaurant", cascade = CascadeType.ALL)
 		@PrimaryKeyJoinColumn
+		@OnDelete(action = OnDeleteAction.CASCADE)
 		RestaurantAddress restaurantAddress;
 		
 }

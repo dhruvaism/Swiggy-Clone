@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 public class ApiException {
 	
     private String message;
-    private Throwable cause;
     private HttpStatus status;
     
 }

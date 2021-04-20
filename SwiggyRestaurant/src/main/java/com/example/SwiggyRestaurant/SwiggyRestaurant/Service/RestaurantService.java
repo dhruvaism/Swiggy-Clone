@@ -9,13 +9,11 @@ import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.RestaurantDto;
-import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.RestaurantUpdateDto;
-import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.RequestResponse;
 import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.RestaurantAddressDto;
-import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.StatusDto;
 import com.example.SwiggyRestaurant.SwiggyRestaurant.Entity.Restaurant;
 import com.example.SwiggyRestaurant.SwiggyRestaurant.Entity.RestaurantAddress;
 import com.example.SwiggyRestaurant.SwiggyRestaurant.Repository.RestaurantAddressRepository;
@@ -60,41 +58,29 @@ public class RestaurantService {
 	}
 	
 	
-	private RequestResponse response (HttpStatus Hstatus,String description, Object data) {
-		
-		StatusDto status = new StatusDto();
-		
-		status.setStatus(Hstatus);
-		status.setDescription(description);
-		
-		return new RequestResponse(data, status);
-	
-	}
-	
-	
-	public RequestResponse getAllRestaurants() {
+	public ResponseEntity<?> getAllRestaurants() {
 		
 		List<Restaurant> restaurants = restaurantRepository.findAll();
 		
-		return response(HttpStatus.ACCEPTED, "All Restaurants", convertRestaurantToDto(restaurants));
+		return new ResponseEntity<List<RestaurantDto>>(convertRestaurantToDto(restaurants), HttpStatus.ACCEPTED);
 	
 	}
 	
 	
-	public RequestResponse getRestaurant(String restaurantId) {
+	public ResponseEntity<?> getRestaurant(Long restaurantId) {
 		
 		Optional<Restaurant> restaurant = restaurantRepository.findById(restaurantId);
 		
 		if (restaurant.isEmpty()) {
-			return response(HttpStatus.BAD_REQUEST, "Restaurant found" , "No restaurant is associated with this id");
+			return new ResponseEntity<String>("No restaurant is associated with this id", HttpStatus.BAD_REQUEST);
 		}
 		
-		return response(HttpStatus.FOUND, "Restaurant found" ,convertRestaurantToDto(restaurant.get()));
+		return new ResponseEntity<RestaurantDto>(convertRestaurantToDto(restaurant.get()), HttpStatus.FOUND );
 	
 	}
 	
 	
-	public RequestResponse addRestaurant(RestaurantDto restaurantDto) {
+	public ResponseEntity<?> addRestaurant(RestaurantDto restaurantDto) {
 		
 		Restaurant restaurant = convertDtoToRestaurant(restaurantDto);
 		restaurant.getRestaurantAddress().setRestaurant(restaurant);
@@ -102,27 +88,28 @@ public class RestaurantService {
 		try {
 			
 			Restaurant savedRes = restaurantRepository.save(restaurant);
-			
-			return response(HttpStatus.CREATED, "Successfully Registered",
-					convertRestaurantToDto(savedRes));
+			return new ResponseEntity<RestaurantDto>(convertRestaurantToDto(savedRes),
+					HttpStatus.CREATED
+					);
 		
 		}
 		catch (Exception e) {
 		
-			return response(HttpStatus.PARTIAL_CONTENT, "Please fill all details", "This needs to worked for different exception");
+			return new ResponseEntity<String>("This needs to worked for different exception",
+					HttpStatus.PARTIAL_CONTENT);
 		
 		}
 	
 	}
 
 	
-	public RequestResponse updateRestaurant(RestaurantUpdateDto restaurant) {;
+	public ResponseEntity<?> updateRestaurant(RestaurantDto restaurant) {;
 
 		Optional<Restaurant> restaurant1 = restaurantRepository.findById(restaurant.getRestaurantId());
 		
 		if (restaurant1.isEmpty()) {
 	
-			return response(HttpStatus.NOT_FOUND, "Invalid ID", "Who are you?");
+			return new ResponseEntity<String>("Who are you?", HttpStatus.NOT_FOUND);
 		
 		}
 		
@@ -131,18 +118,18 @@ public class RestaurantService {
 		
 		restaurantRepository.save(restaurantRef);
 		
-		return response(HttpStatus.ACCEPTED, "Updated", restaurant);	
+		return new ResponseEntity<RestaurantDto>(restaurant, HttpStatus.ACCEPTED);	
 		
 	}
 
 	
-	public RequestResponse deleteRestaurant(String restaurantId) {
+	public ResponseEntity<?> deleteRestaurant(Long restaurantId) {
 
 		Optional<Restaurant> restaurant1 = restaurantRepository.findById(restaurantId);
 		
 		if (restaurant1.isEmpty()) {
 		
-			return response(HttpStatus.NOT_FOUND, "Invalid ID", "This ID has not been used");
+			return new ResponseEntity<String>("This ID has not been used", HttpStatus.NOT_FOUND);
 		
 		}
 		
@@ -150,35 +137,35 @@ public class RestaurantService {
 		
 		restaurantRepository.delete(restaurant1.get());
 		
-		return response(HttpStatus.ACCEPTED, "Deleted", "Sorry, we couldn't help with our services");
+		return new ResponseEntity<String>("Sorry, we couldn't help with our services", HttpStatus.ACCEPTED);
 	
 	}
 
-	public RequestResponse searchRestaurantByCity(String cityName) {
+	public ResponseEntity<?> searchRestaurantByCity(String cityName) {
 
-		List<String> restaurantId = restaurantAddressRepository.findAllByCity(cityName);
+		List<Long> restaurantId = restaurantAddressRepository.findAllByCity(cityName);
 		
 		List<Restaurant> restaurants = restaurantRepository.findAllById(restaurantId);
 		
-		return response(HttpStatus.ACCEPTED, "All Restaurant in this city" ,convertRestaurantToDto(restaurants));
+		return new ResponseEntity<List<RestaurantDto>>(convertRestaurantToDto(restaurants), HttpStatus.ACCEPTED);
 	
 	}
 	
 	
-	public RequestResponse searchRestaurantByName(String restaurantName) {		
+	public ResponseEntity<?> searchRestaurantByName(String restaurantName) {		
 
-		List<Restaurant> restaurants = restaurantRepository.findAllByRestaurantName(restaurantName);
+		List<Restaurant> restaurants = restaurantRepository.findByRestaurantName(restaurantName);
 		
-		return response(HttpStatus.ACCEPTED, "All Restaurant with this name" ,convertRestaurantToDto(restaurants));
+		return new ResponseEntity<List<RestaurantDto>>(convertRestaurantToDto(restaurants), HttpStatus.ACCEPTED);
 	
 	}
 	
 	
-	public RequestResponse updateAddress(String restaurantId, RestaurantAddressDto restaurantAdd) {
+	public ResponseEntity<?> updateAddress(Long restaurantId, RestaurantAddressDto restaurantAdd) {
 		Optional<RestaurantAddress> restaurant1 = restaurantAddressRepository.findById(restaurantId);
 		
 		if (restaurant1.isEmpty()) {
-			return response(HttpStatus.NOT_FOUND, "Invalid ID", "This ID has not been used");
+			return new ResponseEntity<String>("This ID has not been used", HttpStatus.NOT_FOUND);
 		}
 		
 		RestaurantAddress restaurantRef = restaurant1.get();
@@ -186,7 +173,7 @@ public class RestaurantService {
 		
 		restaurantAddressRepository.save(restaurantRef);
 		
-		return response(HttpStatus.ACCEPTED, "Updated", restaurantAdd);
+		return new ResponseEntity<RestaurantAddressDto>(restaurantAdd, HttpStatus.ACCEPTED);
 	
 	}
 }

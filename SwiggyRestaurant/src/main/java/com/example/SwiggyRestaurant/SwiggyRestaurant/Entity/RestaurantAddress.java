@@ -31,7 +31,7 @@ public class RestaurantAddress {
 	
 	@Id
 	@Column(name = "restaurantId")
-	private String restaurantAddressId;
+	private Long restaurantAddressId;
 	
 	@Column(name = "STREET_NAME", length = 30, nullable = false)
 	private String streetName;

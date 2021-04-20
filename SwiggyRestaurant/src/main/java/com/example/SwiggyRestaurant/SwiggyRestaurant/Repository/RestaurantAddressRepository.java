@@ -9,9 +9,9 @@ import org.springframework.stereotype.Repository;
 import com.example.SwiggyRestaurant.SwiggyRestaurant.Entity.RestaurantAddress;
 
 @Repository
-public interface RestaurantAddressRepository extends JpaRepository<RestaurantAddress, String>{
+public interface RestaurantAddressRepository extends JpaRepository<RestaurantAddress, Long>{
 
 	@Query("SELECT restAdd.id FROM RestaurantAddress restAdd WHERE restAdd.city = ?1")
-	List<String> findAllByCity(String city);
+	List<Long> findAllByCity(String city);
 
 }
