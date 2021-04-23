@@ -4,10 +4,8 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -44,12 +42,12 @@ public class RestaurantReview {
 	@Column(name = "Last_Update", nullable = false)
 	private LocalDateTime lastUpdate;
 	
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "restaurantId", referencedColumnName = "restaurantId", nullable = false)
+	@ManyToOne
+	@NotNull
 	Restaurant restaurant;
 	
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "customerId", referencedColumnName = "customerId", nullable = false)
+	@ManyToOne
+	@NotNull
 	Customer customer;
 	
 }
