@@ -9,10 +9,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RestaurantReviewDto {
+public class ExistingReview {
+
+	private Long reviewId;
 	
 	private String reviewInfo;
-	
+		
 	private int ratings;
 	
 }

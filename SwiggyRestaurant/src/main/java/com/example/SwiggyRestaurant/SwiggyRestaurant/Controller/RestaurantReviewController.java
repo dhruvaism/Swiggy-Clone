@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.ExistingReview;
 import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.RestaurantReviewDto;
 import com.example.SwiggyRestaurant.SwiggyRestaurant.Service.RestaurantReviewService;
 
@@ -19,32 +20,42 @@ public class RestaurantReviewController {
 	@Autowired
 	RestaurantReviewService restaurantReviewService;
 	
-	@GetMapping("restaurant/{id}/review")
-	public ResponseEntity<Object> getReviews(@PathVariable("id") Long restaurantId) {
-		return restaurantReviewService.getReviews(restaurantId); 
+	@GetMapping("customer/{cust}/review")
+	public ResponseEntity<?> getReviewCustomer(@PathVariable("cust") Long customerId) {
+		return restaurantReviewService.getReviewCustomer(customerId); 
 	}
 
-	@GetMapping("customer/review/{id}")
-	public ResponseEntity<Object> getReview(Long reviewId) {
-		return restaurantReviewService.getReview(reviewId);
+	@GetMapping("restaurant/{rest}/review")
+	public ResponseEntity<?> getReviewRestaurant(@PathVariable("rest") Long restaurantId) {
+		return restaurantReviewService.getReviewRestaurant(restaurantId); 
 	}
 	
-	@PostMapping("customer/{id}/review") 
-	public ResponseEntity<Object> addReview(@PathVariable("id") Long restaurantId, @RequestBody RestaurantReviewDto review) {
-		return restaurantReviewService.addReview(restaurantId, review);
+	@GetMapping("customer/{cust}/restaurant/{rest}/review")
+	public ResponseEntity<?> getReview(@PathVariable("cust") Long customerId,
+			@PathVariable("rest") Long restaurantId) {
+		return restaurantReviewService.getReview(customerId, restaurantId);
 	}
 	
-	@PutMapping("customer/{id1}/review/{id2}")
-	public ResponseEntity<Object> updateReview(@PathVariable("id1") Long restaurantId,
-			@PathVariable("id2") String reviewId,
+	@PostMapping("customer/{cust}/restaurant/{rest}/review") 
+	public ResponseEntity<?> addReview(@PathVariable("cust") Long customerId,
+			@PathVariable("rest") Long restaurantId,
 			@RequestBody RestaurantReviewDto review) {
-		return restaurantReviewService.updateReview(restaurantId, reviewId, review);
+		return restaurantReviewService.addReview(customerId, restaurantId, review);
 	}
 	
-	@DeleteMapping("customer/{id1}/review/{id2}")
-	public ResponseEntity<Object> delteReview(@PathVariable("id1") Long restaurantId,
-			@PathVariable("id2") String reviewId) {
-		return restaurantReviewService.deleteReview(restaurantId, reviewId);
+	@PutMapping("customer/{cust}/restaurant/{rest}/review/{view}")
+	public ResponseEntity<?> updateReview(@PathVariable("cust") Long customerId,
+			@PathVariable("rest") Long restaurantId,
+			@PathVariable("view") Long reviewId,
+			@RequestBody ExistingReview review) {
+		return restaurantReviewService.updateReview(customerId, restaurantId, reviewId, review);
+	}
+	
+	@DeleteMapping("customer/{cust}/restaurant/{rest}/review/{view}")
+	public ResponseEntity<?> deleteReview(@PathVariable("cust") Long customerId,
+			@PathVariable("rest") Long restaurantId,
+			@PathVariable("view") Long reviewId) {
+		return restaurantReviewService.deleteReview(customerId, restaurantId, reviewId);
 	}
 	
 }

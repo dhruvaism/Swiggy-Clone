@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.RestaurantDto;
+import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.NewRestaurant;
 import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.RestaurantAddressDto;
 import com.example.SwiggyRestaurant.SwiggyRestaurant.Entity.Restaurant;
 import com.example.SwiggyRestaurant.SwiggyRestaurant.Entity.RestaurantAddress;
@@ -44,7 +45,7 @@ public class RestaurantService {
 	}
 	
 	
-	private Restaurant convertDtoToRestaurant(RestaurantDto restaurantDto) {
+	private Restaurant convertDtoToRestaurant(NewRestaurant restaurantDto) {
 	
 		return modelMapper.map(restaurantDto, Restaurant.class);
 	
@@ -80,7 +81,7 @@ public class RestaurantService {
 	}
 	
 	
-	public ResponseEntity<?> addRestaurant(RestaurantDto restaurantDto) {
+	public ResponseEntity<?> addRestaurant(NewRestaurant restaurantDto) {
 		
 		Restaurant restaurant = convertDtoToRestaurant(restaurantDto);
 		restaurant.getRestaurantAddress().setRestaurant(restaurant);

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.RestaurantDto;
+import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.NewRestaurant;
 import com.example.SwiggyRestaurant.SwiggyRestaurant.Dto.RestaurantAddressDto;
 import com.example.SwiggyRestaurant.SwiggyRestaurant.Service.RestaurantService;
 
@@ -20,45 +21,44 @@ public class RestaurantController {
 	
 	@Autowired
 	RestaurantService restaurantService;
-	
 	@GetMapping("/restaurants")
-	public ResponseEntity<Object> getAllRestaurants() { 
+	public ResponseEntity<?> getAllRestaurants() { 
 		return restaurantService.getAllRestaurants();
 	}
 	
 	@GetMapping("/restaurant/{id}")
-	public ResponseEntity<Object> getRestaurant(@PathVariable("id") Long restaurantId) {
+	public ResponseEntity<?> getRestaurant(@PathVariable("id") Long restaurantId) {
 		return restaurantService.getRestaurant(restaurantId);
 	}
 	
 	@GetMapping("/restaurant/search/name/{name}")
-	public ResponseEntity<Object> searchRestaurantByName(@PathVariable("name") String name) {
+	public ResponseEntity<?> searchRestaurantByName(@PathVariable("name") String name) {
 		return restaurantService.searchRestaurantByName(name);
 	}
 	
 	@GetMapping("/restaurant/search/city/{cityname}")
-	public ResponseEntity<Object> searchRestaurantByCity(@PathVariable("cityname") String cityName) {
+	public ResponseEntity<?> searchRestaurantByCity(@PathVariable("cityname") String cityName) {
 		return restaurantService.searchRestaurantByCity(cityName);
 	}
 	
 	@PutMapping("restaurant/{id}/address")
-	public ResponseEntity<Object> updateAddress(@PathVariable("id") long restaurantId, @RequestBody RestaurantAddressDto restaurantAddress) {
+	public ResponseEntity<?> updateAddress(@PathVariable("id") long restaurantId, @RequestBody RestaurantAddressDto restaurantAddress) {
 		return restaurantService.updateAddress(restaurantId, restaurantAddress);
 	}
 	
 	@PostMapping("/restaurant")
-	public ResponseEntity<Object> addRestaurant(@RequestBody RestaurantDto restaurant) {
+	public ResponseEntity<?> addRestaurant(@RequestBody NewRestaurant restaurant) {
 		return restaurantService.addRestaurant(restaurant);
 	}
 	
 	@PutMapping("/restaurant")
-	public ResponseEntity<Object> updateRestaurant(@RequestBody 
+	public ResponseEntity<?> updateRestaurant(@RequestBody 
 			RestaurantDto updateDetails) {
 		return restaurantService.updateRestaurant(updateDetails);
 	}
 	
 	@DeleteMapping("/restaurant/{id}")
-	public ResponseEntity<Object> deleteRestaurant(@PathVariable("id") Long restaurantId) {
+	public ResponseEntity<?> deleteRestaurant(@PathVariable("id") Long restaurantId) {
 		return restaurantService.deleteRestaurant(restaurantId);
 	}
 	
